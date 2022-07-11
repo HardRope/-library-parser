@@ -23,12 +23,18 @@ def download_book(url, id):
 
 
 def get_book_info(id):
-    response = requests.get(f'https://tululu.org/b{id}/')
     '''Return book's name and author'''
+
+    response = requests.get(f'https://tululu.org/b{id}/')
     soup = BeautifulSoup(response.text, 'lxml')
     name = soup.find('h1')
     title, author = name.text.split(' \xa0 :: \xa0 ')
-    return sanitize(title), sanitize(author)
+
+    serialize_book = {
+        'title': sanitize(title),
+        'author': author,
+    }
+    return serialize_book
 
 
 if __name__ == '__main__':
@@ -42,8 +48,8 @@ if __name__ == '__main__':
         except requests.HTTPError:
             continue
 
-        title, author = get_book_info(id)
-        file_name = f'{id}. {title}.txt'
+        serialize_book = get_book_info(id)
+        file_name = f'''{id}. {serialize_book['title']}'.txt'''
         save_path = dir_path / file_name
 
         with open(save_path, 'wb') as file:
