@@ -1,4 +1,6 @@
 from pathlib import Path
+from urllib.parse import urljoin
+
 import requests
 
 from bs4 import BeautifulSoup
@@ -27,12 +29,15 @@ def get_book_info(url):
 
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'lxml')
-    name = soup.find('h1')
-    title, author = name.text.split(' \xa0 :: \xa0 ')
+
+    book_header = soup.find('h1')
+    title, author = book_header.text.split(' \xa0 :: \xa0 ')
+    image_relative_url = soup.find(_class='bookimage').find('img')['src']
 
     serialize_book = {
         'title': sanitize(title),
         'author': author,
+        'img_url': urljoin(url, image_relative_url)
     }
     return serialize_book
 
