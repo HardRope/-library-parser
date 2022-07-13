@@ -22,10 +22,10 @@ def download_book(url, id):
     return response
 
 
-def get_book_info(id):
+def get_book_info(url):
     '''Return book's name and author'''
 
-    response = requests.get(f'https://tululu.org/b{id}/')
+    response = requests.get(url)
     soup = BeautifulSoup(response.text, 'lxml')
     name = soup.find('h1')
     title, author = name.text.split(' \xa0 :: \xa0 ')
@@ -42,13 +42,15 @@ if __name__ == '__main__':
 
     for id in range(1, 11):
         url = f'https://tululu.org/txt.php'
+        book_page_url = f'https://tululu.org/b{id}/'
+
         response = download_book(url, id)
         try:
             check_for_redirect(response)
         except requests.HTTPError:
             continue
 
-        serialize_book = get_book_info(id)
+        serialize_book = get_book_info(book_page_url)
         file_name = f'''{id}. {serialize_book['title']}'.txt'''
         save_path = dir_path / file_name
 
