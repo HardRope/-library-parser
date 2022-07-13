@@ -24,6 +24,11 @@ def download_book(url, id):
     return response
 
 
+def download_book_image(url):
+    response = requests.get(url)
+    response.raise_for_status()
+    return response
+
 def get_book_info(url):
     '''Return book's name and author'''
 
@@ -32,7 +37,7 @@ def get_book_info(url):
 
     book_header = soup.find('h1')
     title, author = book_header.text.split(' \xa0 :: \xa0 ')
-    image_relative_url = soup.find(_class='bookimage').find('img')['src']
+    image_relative_url = soup.find(class_='bookimage').find('img')['src']
 
     serialize_book = {
         'title': sanitize(title),
@@ -43,23 +48,29 @@ def get_book_info(url):
 
 
 if __name__ == '__main__':
-    dir_path = create_directory()
+    books_path = create_directory()
+    images_path = create_directory('images')
 
     for id in range(1, 11):
         url = f'https://tululu.org/txt.php'
         book_page_url = f'https://tululu.org/b{id}/'
 
-        response = download_book(url, id)
+        book_response = download_book(url, id)
         try:
-            check_for_redirect(response)
+            check_for_redirect(book_response)
         except requests.HTTPError:
             continue
 
         serialize_book = get_book_info(book_page_url)
         file_name = f'''{id}. {serialize_book['title']}'.txt'''
-        save_path = dir_path / file_name
+        save_book_path = books_path / file_name
 
-        with open(save_path, 'wb') as file:
-            file.write(response.content)
+        with open(save_book_path, 'wb') as file:
+            file.write(book_response.content)
 
+        image_url = serialize_book['img_url']
+        image_name = f'''{id}. {serialize_book['title']}.jpg'''
+        save_image_path = images_path/ image_name
 
+        with open(save_image_path, 'wb') as file:
+            file.write(download_book_image(image_url).content)
