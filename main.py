@@ -1,4 +1,6 @@
 import argparse
+import json
+
 from pathlib import Path
 from urllib.parse import urljoin
 
@@ -14,10 +16,15 @@ def create_parser():
     return parser
 
 
-def create_directory(save_dir='books'):
+def create_directory(save_dir):
     dir_path = Path.cwd() / save_dir
     Path.mkdir(dir_path, parents=True, exist_ok=True)
     return dir_path
+
+
+def save_file(path, content):
+    with open(path, 'wb') as file:
+        file.write(content)
 
 
 def check_for_redirect(response):
@@ -75,10 +82,14 @@ if __name__ == '__main__':
     parser = create_parser()
     namespace = parser.parse_args()
 
-    books_path = create_directory()
+    books_path = create_directory('books')
     images_path = create_directory('images')
+    json_path = create_directory('book_info')
 
-    for id in range(namespace.start_id, namespace.end_id + 1):
+    serialized_books = {}
+    save_json_path = json_path / 'book_info.json'
+
+    for id in range(namespace.start_id + 1, namespace.end_id + 1):
         url = f'https://tululu.org/txt.php'
         book_page_url = f'https://tululu.org/b{id}/'
 
@@ -90,14 +101,22 @@ if __name__ == '__main__':
 
         serialize_book = parse_book_page(requests.get(book_page_url))
         file_name = f'''{id}. {serialize_book['title']}'.txt'''
-        save_book_path = books_path / file_name
-
-        with open(save_book_path, 'wb') as file:
-            file.write(book_response.content)
 
         image_url = serialize_book['img_url']
         image_name = f'''{id}. {serialize_book['title']}.jpg'''
-        save_image_path = images_path/ image_name
 
-        with open(save_image_path, 'wb') as file:
-            file.write(download_book_image(image_url).content)
+        save_book_path = books_path / file_name
+        save_image_path = images_path / image_name
+
+        save_file(save_book_path, book_response.content)
+        save_file(save_image_path, download_book_image(image_url).content)
+
+        serialized_books[serialize_book['title']] = {
+            'genres': serialize_book['genres'],
+            'author': serialize_book['author'],
+            'comments': serialize_book['comments']
+        }
+
+    # save_file(save_json_path, serialized_books)
+    with open(save_json_path, 'w') as file:
+        json.dump(serialized_books, file, indent=4, ensure_ascii=False)
