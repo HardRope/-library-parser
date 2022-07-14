@@ -39,6 +39,12 @@ def get_book_comments(soup):
     return comments
 
 
+def get_book_genres(soup):
+    genres_blok = soup.find(id='content').find('span', class_='d_book').find_all('a')
+    genres = [genre.text for genre in genres_blok]
+    return genres
+
+
 def get_book_info(url):
     '''Return book's name and author'''
 
@@ -51,6 +57,7 @@ def get_book_info(url):
 
     serialize_book = {
         'title': sanitize(title),
+        'genres': get_book_genres(soup),
         'author': author,
         'img_url': urljoin(url, image_relative_url),
         'comments': get_book_comments(soup)
