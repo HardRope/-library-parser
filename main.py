@@ -29,6 +29,16 @@ def download_book_image(url):
     response.raise_for_status()
     return response
 
+
+def get_book_comments(soup):
+    comments = []
+    comments_block = soup.find_all(class_='texts')
+    for comment in comments_block:
+        text = comment.find(class_='black').text
+        comments.append(text)
+    return comments
+
+
 def get_book_info(url):
     '''Return book's name and author'''
 
@@ -42,7 +52,8 @@ def get_book_info(url):
     serialize_book = {
         'title': sanitize(title),
         'author': author,
-        'img_url': urljoin(url, image_relative_url)
+        'img_url': urljoin(url, image_relative_url),
+        'comments': get_book_comments(soup)
     }
     return serialize_book
 
