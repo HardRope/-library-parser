@@ -1,3 +1,4 @@
+import argparse
 from pathlib import Path
 from urllib.parse import urljoin
 
@@ -5,6 +6,13 @@ import requests
 
 from bs4 import BeautifulSoup
 from pathvalidate import sanitize_filename as sanitize
+
+def create_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('start_id', default=0, type=int)
+    parser.add_argument('end_id', default=10, type=int)
+    return parser
+
 
 def create_directory(save_dir='books'):
     dir_path = Path.cwd() / save_dir
@@ -40,15 +48,13 @@ def get_book_comments(soup):
 
 
 def get_book_genres(soup):
-    genres_blok = soup.find(id='content').find('span', class_='d_book').find_all('a')
-    genres = [genre.text for genre in genres_blok]
+    genres_block = soup.find(id='content').find('span', class_='d_book').find_all('a')
+    genres = [genre.text for genre in genres_block]
     return genres
 
 
-def get_book_info(url):
+def parse_book_page(response):
     '''Return book's name and author'''
-
-    response = requests.get(url)
     soup = BeautifulSoup(response.text, 'lxml')
 
     book_header = soup.find('h1')
@@ -66,10 +72,13 @@ def get_book_info(url):
 
 
 if __name__ == '__main__':
+    parser = create_parser()
+    namespace = parser.parse_args()
+
     books_path = create_directory()
     images_path = create_directory('images')
 
-    for id in range(1, 11):
+    for id in range(namespace.start_id, namespace.end_id + 1):
         url = f'https://tululu.org/txt.php'
         book_page_url = f'https://tululu.org/b{id}/'
 
@@ -79,7 +88,7 @@ if __name__ == '__main__':
         except requests.HTTPError:
             continue
 
-        serialize_book = get_book_info(book_page_url)
+        serialize_book = parse_book_page(requests.get(book_page_url))
         file_name = f'''{id}. {serialize_book['title']}'.txt'''
         save_book_path = books_path / file_name
 
