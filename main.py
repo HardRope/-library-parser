@@ -89,7 +89,7 @@ if __name__ == '__main__':
     serialized_books = {}
     save_json_path = json_path / 'book_info.json'
 
-    for book_id in range(namespace.start_id + 1, namespace.end_id + 1):
+    for book_id in range(namespace.start_id, namespace.end_id + 1):  #Add 1 to include last book in range
         url = f'https://tululu.org/txt.php'
         book_page_url = f'https://tululu.org/b{book_id}/'
 
