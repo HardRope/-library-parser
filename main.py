@@ -69,14 +69,14 @@ def parse_book_page(url, response):
     title, author = book_header.text.split(' \xa0 :: \xa0 ')
     image_relative_url = soup.find(class_='bookimage').find('img')['src']
 
-    serialize_book = {
+    book_info = {
         'title': sanitize(title),
         'genres': get_book_genres(soup),
         'author': author,
         'img_url': urljoin(url, image_relative_url),
         'comments': get_book_comments(soup)
     }
-    return serialize_book
+    return book_info
 
 
 if __name__ == '__main__':
@@ -105,11 +105,11 @@ if __name__ == '__main__':
         book_page_response = requests.get(book_page_url)
         book_page_response.raise_for_status()
 
-        serialize_book = parse_book_page(book_page_url, book_page_response)
-        file_name = f'''{book_id}. {serialize_book['title']}'.txt'''
+        book_info = parse_book_page(book_page_url, book_page_response)
+        file_name = f'''{book_id}. {book_info['title']}'.txt'''
 
-        image_url = serialize_book['img_url']
-        image_name = f'''{book_id}. {serialize_book['title']}.jpg'''
+        image_url = book_info['img_url']
+        image_name = f'''{book_id}. {book_info['title']}.jpg'''
 
         save_book_path = books_path / file_name
         save_image_path = images_path / image_name
@@ -117,10 +117,10 @@ if __name__ == '__main__':
         save_file(save_book_path, book_response.content)
         save_file(save_image_path, download_book_image(image_url).content)
 
-        serialized_books[serialize_book['title']] = {
-            'genres': serialize_book['genres'],
-            'author': serialize_book['author'],
-            'comments': serialize_book['comments']
+        serialized_books[book_info['title']] = {
+            'genres': book_info['genres'],
+            'author': book_info['author'],
+            'comments': book_info['comments']
         }
 
     # save_file(save_json_path, serialized_books)
