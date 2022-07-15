@@ -33,19 +33,6 @@ def check_for_redirect(response):
         raise requests.HTTPError
 
 
-def download_book(url, id):
-    params = {'id': id }
-    response = requests.get(url, params=params, allow_redirects=False)
-    response.raise_for_status()
-    return response
-
-
-def download_book_image(url):
-    response = requests.get(url)
-    response.raise_for_status()
-    return response
-
-
 def get_book_comments(soup):
     comments_block = soup.find_all(class_='texts')
     comments = [comment.find(class_='black').text for comment in comments_block]
@@ -92,7 +79,8 @@ if __name__ == '__main__':
         url = f'https://tululu.org/txt.php'
         book_page_url = f'https://tululu.org/b{book_id}/'
 
-        book_response = download_book(url, book_id)
+        book_response = requests.get(url, params={'id':book_id}, allow_redirects=False)
+        book_response.raise_for_status()
         try:
             check_for_redirect(book_response)
         except requests.HTTPError:
@@ -108,11 +96,14 @@ if __name__ == '__main__':
         image_url = book_info['img_url']
         image_name = f'''{book_id}. {book_info['title']}.jpg'''
 
+        book_image_response = requests.get(image_url)
+        book_image_response.raise_for_status()
+
         save_book_path = books_path / file_name
         save_image_path = images_path / image_name
 
         save_file(save_book_path, book_response.content)
-        save_file(save_image_path, download_book_image(image_url).content)
+        save_file(save_image_path, book_image_response.content)
 
         serialized_books[book_info['title']] = {
             'genres': book_info['genres'],
