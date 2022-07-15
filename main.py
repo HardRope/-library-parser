@@ -120,6 +120,5 @@ if __name__ == '__main__':
             'comments': book_info['comments']
         }
 
-    # save_file(save_json_path, serialized_books)
     with open(save_json_path, 'w') as file:
         json.dump(serialized_books, file, indent=4, ensure_ascii=False)
