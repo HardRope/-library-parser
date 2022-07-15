@@ -60,7 +60,7 @@ def get_book_genres(soup):
     return genres
 
 
-def parse_book_page(response):
+def parse_book_page(url, response):
     '''Return book's name and author'''
     soup = BeautifulSoup(response.text, 'lxml')
 
@@ -99,7 +99,7 @@ if __name__ == '__main__':
         except requests.HTTPError:
             continue
 
-        serialize_book = parse_book_page(requests.get(book_page_url))
+        serialize_book = parse_book_page(book_page_url, requests.get(book_page_url))
         file_name = f'''{id}. {serialize_book['title']}'.txt'''
 
         image_url = serialize_book['img_url']
