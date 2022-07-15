@@ -62,7 +62,7 @@ def get_book_genres(soup):
 
 
 def parse_book_page(url, response):
-    '''Return book's name and author'''
+    '''Return book's information: title, author, genre, comments and img_url'''
     soup = BeautifulSoup(response.text, 'lxml')
 
     book_header = soup.find('h1')
