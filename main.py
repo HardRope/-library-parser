@@ -89,21 +89,21 @@ if __name__ == '__main__':
     serialized_books = {}
     save_json_path = json_path / 'book_info.json'
 
-    for id in range(namespace.start_id + 1, namespace.end_id + 1):
+    for book_id in range(namespace.start_id + 1, namespace.end_id + 1):
         url = f'https://tululu.org/txt.php'
-        book_page_url = f'https://tululu.org/b{id}/'
+        book_page_url = f'https://tululu.org/b{book_id}/'
 
-        book_response = download_book(url, id)
+        book_response = download_book(url, book_id)
         try:
             check_for_redirect(book_response)
         except requests.HTTPError:
             continue
 
         serialize_book = parse_book_page(book_page_url, requests.get(book_page_url))
-        file_name = f'''{id}. {serialize_book['title']}'.txt'''
+        file_name = f'''{book_id}. {serialize_book['title']}'.txt'''
 
         image_url = serialize_book['img_url']
-        image_name = f'''{id}. {serialize_book['title']}.jpg'''
+        image_name = f'''{book_id}. {serialize_book['title']}.jpg'''
 
         save_book_path = books_path / file_name
         save_image_path = images_path / image_name
