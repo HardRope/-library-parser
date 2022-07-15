@@ -47,11 +47,8 @@ def download_book_image(url):
 
 
 def get_book_comments(soup):
-    comments = []
     comments_block = soup.find_all(class_='texts')
-    for comment in comments_block:
-        text = comment.find(class_='black').text
-        comments.append(text)
+    comments = [comment.find(class_='black').text for comment in comments_block]
     return comments
 
 
