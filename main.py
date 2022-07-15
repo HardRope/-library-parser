@@ -10,9 +10,9 @@ from bs4 import BeautifulSoup
 from pathvalidate import sanitize_filename as sanitize
 
 def create_parser():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('start_id', default=0, type=int)
-    parser.add_argument('end_id', default=10, type=int)
+    parser = argparse.ArgumentParser(description='Parse books from tululu.org')
+    parser.add_argument('start_id', default=0, type=int, help='Start book id')
+    parser.add_argument('end_id', default=10, type=int, help='Finish book id')
     return parser
 
 
