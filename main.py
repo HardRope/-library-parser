@@ -102,7 +102,10 @@ if __name__ == '__main__':
             logging.info(f'Книга с id {book_id} отсутствует на сайте.')
             continue
 
-        serialize_book = parse_book_page(book_page_url, requests.get(book_page_url))
+        book_page_response = requests.get(book_page_url)
+        book_page_response.raise_for_status()
+
+        serialize_book = parse_book_page(book_page_url, book_page_response)
         file_name = f'''{book_id}. {serialize_book['title']}'.txt'''
 
         image_url = serialize_book['img_url']
