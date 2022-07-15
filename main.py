@@ -1,5 +1,6 @@
 import argparse
 import json
+import logging
 
 from pathlib import Path
 from urllib.parse import urljoin
@@ -79,6 +80,7 @@ def parse_book_page(url, response):
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
     parser = create_parser()
     namespace = parser.parse_args()
 
@@ -97,6 +99,7 @@ if __name__ == '__main__':
         try:
             check_for_redirect(book_response)
         except requests.HTTPError:
+            logging.info(f'Книга с id {book_id} отсутствует на сайте.')
             continue
 
         serialize_book = parse_book_page(book_page_url, requests.get(book_page_url))
