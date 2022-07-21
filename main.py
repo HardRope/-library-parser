@@ -29,7 +29,7 @@ def save_file(path, content):
 
 
 def check_for_redirect(response):
-    if response.status_code != 200:
+    if response.history:
         raise requests.HTTPError
 
 
@@ -79,7 +79,7 @@ if __name__ == '__main__':
         url = f'https://tululu.org/txt.php'
         book_page_url = f'https://tululu.org/b{book_id}/'
 
-        book_response = requests.get(url, params={'id':book_id}, allow_redirects=False)
+        book_response = requests.get(url, params={'id':book_id})
         book_response.raise_for_status()
         try:
             check_for_redirect(book_response)
@@ -89,6 +89,11 @@ if __name__ == '__main__':
 
         book_page_response = requests.get(book_page_url)
         book_page_response.raise_for_status()
+        try:
+            check_for_redirect(book_page_response)
+        except requests.HTTPError:
+            logging.info(f'Страница книги с id {book_id} отсутствует на сайте.')
+            continue
 
         book_info = parse_book_page(book_page_url, book_page_response)
         file_name = f'''{book_id}. {book_info['title']}'.txt'''
