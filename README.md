@@ -18,19 +18,19 @@ After running programm, it create 3 directories: `book_info`, `books` and `image
     },
    ```
    
-2. `books` - dir with book files in format `{id}. {title}.txt`
+2. `books` - dir with book files in format `{id}. {title}.txt`.
 
-3. `images` - books covers in `jpg` format
+3. `images` - books covers in `jpg` format.
 
 For better working, programm check book's availability, and miss unused id's.
 
 In case of connection problem, it's stop parsing and tries to reconnect for current book page 
-every 60 secs 
+every 60 secs.
 
 ## Install
 
-1. Download code 
-2. Install required libs by console command
+1. Download code.
+2. Install required libs by console command.
    
     ```
    pip install -r requirements.txt

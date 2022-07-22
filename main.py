@@ -88,7 +88,7 @@ if __name__ == '__main__':
                 check_for_redirect(book_response)
                 break
             except requests.ConnectionError:
-                logging.info('Проблема подключения. Повторная попытка через 60 секунд')
+                logging.info('Проблема подключения. Повторная попытка через 60 секунд.')
                 time.sleep(60)
                 continue
             except requests.HTTPError:
@@ -104,7 +104,7 @@ if __name__ == '__main__':
                check_for_redirect(book_page_response)
                break
            except requests.ConnectionError:
-               logging.info('Проблема подключения. Повторная попытка через 60 секунд')
+               logging.info('Проблема подключения. Повторная попытка через 60 секунд.')
                time.sleep(60)
                continue
            except requests.HTTPError:
