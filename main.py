@@ -54,14 +54,14 @@ def parse_book_page(url, response):
     title, author = book_header.text.split(' \xa0 :: \xa0 ')
     image_relative_url = soup.find(class_='bookimage').find('img')['src']
 
-    book_info = {
+    parsed_book = {
         'title': sanitize(title),
         'genres': get_book_genres(soup),
         'author': author,
         'img_url': urljoin(url, image_relative_url),
         'comments': get_book_comments(soup)
     }
-    return book_info
+    return parsed_book
 
 
 if __name__ == '__main__':
