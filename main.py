@@ -86,6 +86,10 @@ if __name__ == '__main__':
                 book_response = requests.get(url, params={'id': book_id})
                 book_response.raise_for_status()
                 check_for_redirect(book_response)
+
+                book_page_response = requests.get(book_page_url)
+                book_page_response.raise_for_status()
+                check_for_redirect(book_page_response)
                 break
             except requests.ConnectionError:
                 logging.info('Проблема подключения. Повторная попытка через 60 секунд.')
@@ -96,22 +100,6 @@ if __name__ == '__main__':
                 flag = False
         else:
             continue
-
-        while flag == True:
-           try:
-               book_page_response = requests.get(book_page_url)
-               book_page_response.raise_for_status()
-               check_for_redirect(book_page_response)
-               break
-           except requests.ConnectionError:
-               logging.info('Проблема подключения. Повторная попытка через 60 секунд.')
-               time.sleep(60)
-               continue
-           except requests.HTTPError:
-               logging.info(f'Страница книги с id {book_id} отсутствует на сайте.')
-               flag = False
-        else:
-           continue
 
         book_info = parse_book_page(book_page_url, book_page_response)
         file_name = f'''{book_id}. {book_info['title']}'.txt'''
