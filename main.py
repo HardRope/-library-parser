@@ -11,17 +11,22 @@ import requests
 from bs4 import BeautifulSoup
 from pathvalidate import sanitize_filename as sanitize
 
-def create_parser():
-    parser = argparse.ArgumentParser(description='Parse books from tululu.org')
-    parser.add_argument('-start_id', '-s', default=0, type=int, help='Start book id. Default = 0')
-    parser.add_argument('-end_id', '-e', default=10, type=int, help='Finish book id. Default = 10')
-    return parser
+def check_for_redirect(response):
+    if response.history:
+        raise requests.HTTPError
 
 
 def create_directory(save_dir):
     dir_path = Path.cwd() / save_dir
     Path.mkdir(dir_path, parents=True, exist_ok=True)
     return dir_path
+
+
+def create_parser():
+    parser = argparse.ArgumentParser(description='Parse books from tululu.org')
+    parser.add_argument('-start_id', '-s', default=0, type=int, help='Start book id. Default = 0')
+    parser.add_argument('-end_id', '-e', default=10, type=int, help='Finish book id. Default = 10')
+    return parser
 
 
 def download_book(content, dir_path, book_id, book_title):
@@ -39,11 +44,6 @@ def download_image(image_url,dir_path, book_id, book_title):
     save_img_path = dir_path / file_name
     with open(save_img_path, 'wb') as file:
         file.write(book_image_response.content)
-
-
-def check_for_redirect(response):
-    if response.history:
-        raise requests.HTTPError
 
 
 def get_book_comments(soup):
