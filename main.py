@@ -24,9 +24,21 @@ def create_directory(save_dir):
     return dir_path
 
 
-def save_file(path, content):
-    with open(path, 'wb') as file:
+def download_book(content, dir_path, book_id, book_title):
+    file_name = f'''{book_id}. {book_title}'.txt'''
+    save_book_path = dir_path / file_name
+    with open(save_book_path, 'wb') as file:
         file.write(content)
+
+
+def download_image(image_url,dir_path, book_id, book_title):
+    book_image_response = requests.get(image_url)
+    book_image_response.raise_for_status()
+
+    file_name = f'''{book_id}. {book_info['title']}.jpg'''
+    save_img_path = dir_path / file_name
+    with open(save_img_path, 'wb') as file:
+        file.write(book_image_response.content)
 
 
 def check_for_redirect(response):
@@ -102,19 +114,9 @@ if __name__ == '__main__':
             continue
 
         book_info = parse_book_page(book_page_url, book_page_response)
-        file_name = f'''{book_id}. {book_info['title']}'.txt'''
 
-        image_url = book_info['img_url']
-        image_name = f'''{book_id}. {book_info['title']}.jpg'''
-
-        book_image_response = requests.get(image_url)
-        book_image_response.raise_for_status()
-
-        save_book_path = books_path / file_name
-        save_image_path = images_path / image_name
-
-        save_file(save_book_path, book_response.content)
-        save_file(save_image_path, book_image_response.content)
+        download_book(book_response.content, books_path, book_id, book_info['title'])
+        download_image(book_info['img_url'], images_path, book_id, book_info['title'])
 
         serialized_books[book_info['title']] = {
             'genres': book_info['genres'],
