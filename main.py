@@ -29,18 +29,23 @@ def create_parser():
     return parser
 
 
-def download_book(content, dir_path, book_id, book_title):
+def download_book(url, dir_path, book_id, book_title):
+    book_response = requests.get(url, params={'id': book_id})
+    book_response.raise_for_status()
+    check_for_redirect(book_response)
+
     file_name = f'''{book_id}. {book_title}'.txt'''
     save_book_path = dir_path / file_name
     with open(save_book_path, 'wb') as file:
-        file.write(content)
+        file.write(book_response.content)
 
 
-def download_image(image_url,dir_path, book_id, book_title):
+def download_image(image_url, dir_path, book_id, book_title):
     book_image_response = requests.get(image_url)
     book_image_response.raise_for_status()
+    check_for_redirect(book_image_response)
 
-    file_name = f'''{book_id}. {book_info['title']}.jpg'''
+    file_name = f'''{book_id}. {book_title}.jpg'''
     save_img_path = dir_path / file_name
     with open(save_img_path, 'wb') as file:
         file.write(book_image_response.content)
@@ -85,7 +90,7 @@ if __name__ == '__main__':
     images_path = create_directory('images')
     json_path = create_directory('book_info')
 
-    serialized_books = {}
+    parsed_books = {}
     save_json_path = json_path / 'book_info.json'
 
     for book_id in range(namespace.start_id, namespace.end_id + 1):  #Add 1 to include last book in range
@@ -95,13 +100,13 @@ if __name__ == '__main__':
         flag = True
         while flag == True:
             try:
-                book_response = requests.get(url, params={'id': book_id})
-                book_response.raise_for_status()
-                check_for_redirect(book_response)
-
                 book_page_response = requests.get(book_page_url)
                 book_page_response.raise_for_status()
                 check_for_redirect(book_page_response)
+                book_info = parse_book_page(book_page_url, book_page_response)
+
+                download_book(url, books_path, book_id, book_info['title'])
+                download_image(book_info['img_url'], images_path, book_id, book_info['title'])
                 break
             except requests.ConnectionError:
                 logging.info('Проблема подключения. Повторная попытка через 60 секунд.')
@@ -113,16 +118,11 @@ if __name__ == '__main__':
         else:
             continue
 
-        book_info = parse_book_page(book_page_url, book_page_response)
-
-        download_book(book_response.content, books_path, book_id, book_info['title'])
-        download_image(book_info['img_url'], images_path, book_id, book_info['title'])
-
-        serialized_books[book_info['title']] = {
+        parsed_books[book_info['title']] = {
             'genres': book_info['genres'],
             'author': book_info['author'],
             'comments': book_info['comments']
         }
 
     with open(save_json_path, 'w') as file:
-        json.dump(serialized_books, file, indent=4, ensure_ascii=False)
+        json.dump(parsed_books, file, indent=4, ensure_ascii=False)
