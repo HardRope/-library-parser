@@ -2,7 +2,7 @@
  
 Programm writed to download books and parse information about it from
 [tululu.org](https://tululu.org/). 
-After running programm, it create 3 directories: `book_info`, `books` and `images`
+After running programm, it create 3 directories: `book_info`, `books` and `images`.
 
 1. `book_info` - contain json-file with information about book you downloaded. 
    
