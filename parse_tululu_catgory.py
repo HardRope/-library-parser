@@ -20,6 +20,12 @@ from main import (
     download_image
 )
 
+def create_parser():
+    parser = argparse.ArgumentParser(description='Parse books from https://tululu.org/l55/ - fantastic genre')
+    parser.add_argument('-start_page', '-s', default=1, type=int, help='Start page. Default = 1')
+    parser.add_argument('-end_page', '-e', default=5, type=int, help='Finish page. Default = 5')
+    return parser
+
 
 def get_books_ids(response):
     soup = BeautifulSoup(response, 'lxml')
@@ -35,10 +41,13 @@ def get_books_ids(response):
 
 
 if __name__ == '__main__':
+    parser = create_parser()
+    namespace = parser.parse_args()
+
     logging.basicConfig(level=logging.INFO)
     books_ids = []
 
-    for page in range(1, 2):
+    for page in range(namespace.start_page, namespace.end_page + 1): #Add 1 to include last page in range
         try:
             url = f'https://tululu.org/l55/{page}/'
             response = requests.get(url)
