@@ -21,38 +21,37 @@ from main import (
 )
 
 
-def get_books_urls(url, response):
+def get_books_ids(response):
     soup = BeautifulSoup(response, 'lxml')
-    soup_of_books = soup.find_all(class_='d_book')
+    soup_of_books = soup.select('.d_book')
 
     parsed_urls = []
     for book_soup in soup_of_books:
-        book_relative_url = book_soup.find('a')['href']
-        book_url = urljoin(url, book_relative_url)
-        book_id = re.findall(r'\d+', book_relative_url)[0]
-        parsed_urls.append((book_id, book_url))
+        book_relative_url = book_soup.select_one('a')['href']
+
+        book_id = re.findall(r'\d+', book_relative_url)
+        parsed_urls.extend(book_id)
     return parsed_urls
 
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    books_urls = []
+    books_ids = []
 
-    for page in range(1, 5):
+    for page in range(1, 2):
         try:
             url = f'https://tululu.org/l55/{page}/'
             response = requests.get(url)
             response.raise_for_status()
             check_for_redirect(response)
 
-            books_urls.extend(get_books_urls(url, response.text))
+            books_ids.extend(get_books_ids(response.text))
         except requests.ConnectionError:
-            logging.info(f'Проблема подключения. Страница {url} не скачана')
+            logging.info(f'Проблема подключения. Страница {page} не скачана')
             continue
         except requests.HTTPError:
-            logging.info(f'Страница {url} отсутствует на сайте.')
+            logging.info(f'Страница {page} отсутствует на сайте.')
             continue
-    print(books_urls)
 
     books_path = create_directory('books')
     images_path = create_directory('images')
@@ -60,9 +59,9 @@ if __name__ == '__main__':
 
     parsed_books = {}
 
-    for book_id, book_page_url in books_urls:
+    for book_id in books_ids:
         url = f'https://tululu.org/txt.php'
-        # book_page_url = f'https://tululu.org/b{book_id}/'
+        book_page_url = f'https://tululu.org/b{book_id}/'
 
         flag = True
         while flag == True:
