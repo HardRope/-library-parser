@@ -31,19 +31,41 @@ every 60 secs.
 
 1. Download code.
 2. Install required libs by console command.
-   
-    ```
+  
+   ```
    pip install -r requirements.txt
    ```
 
-3. Run the programm:
+## Run the programm:
 
-    ```
+To parse book by these id's, use `main.py` file:
+
+   ```
    python main.py [start_id] [end_id]
    ```
-   
-    `Start_id` and `end_id` is a books id's from website, for example
+
+`Start_id` and `end_id` is a books id's from website, for example
    book at these page `https://tululu.org/b1` have id == 1. 
+
+Otherwise, you can use genre parser `parse_tululu_category.py`. 
+It download fantastic books from [fantastic books](https://tululu.org/l55/) by pages
+and have more settings args:
+
+```commandline
+  python parse_tululu_category.py -h
+
+  -h, --help            show this help message and exit
+  -start_page START_PAGE, -s START_PAGE
+                        Start page. Default = 1
+  -end_page END_PAGE, -e END_PAGE
+                        Finish page. Default = 5
+  -si, --skip_imgs      Cancel loading images
+  -st, --skip_txt       Cancel loading books
+  -df DEST_FOLDER, --dest_folder DEST_FOLDER
+                        Path to save books, imges and json
+  -jp JSON_PATH, --json_path JSON_PATH
+                        Path to save json file
+```
 
 ## Project Goals
 
