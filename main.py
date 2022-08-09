@@ -16,8 +16,8 @@ def check_for_redirect(response):
         raise requests.HTTPError
 
 
-def create_directory(save_dir):
-    dir_path = Path.cwd() / save_dir
+def create_directory(save_dir, save_path=Path.cwd()):
+    dir_path = Path(save_path) / save_dir
     Path.mkdir(dir_path, parents=True, exist_ok=True)
     return dir_path
 
