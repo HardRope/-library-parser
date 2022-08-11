@@ -41,7 +41,7 @@ every 60 secs.
 To parse book by these id's, use `parse_tululu_books.py` file:
 
    ```
-   python main.py [start_id] [end_id]
+   python parse_tululu_books.py [start_id] [end_id]
    ```
 
 `Start_id` and `end_id` is a books id's from website, for example
