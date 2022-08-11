@@ -22,13 +22,23 @@ from parse_tululu_books import (
 )
 
 def create_parser():
-    parser = argparse.ArgumentParser(description='Parse books from https://tululu.org/l55/ - fantastic genre')
-    parser.add_argument('-start_page', '-s', default=1, type=int, help='Start page. Default = 1')
-    parser.add_argument('-end_page', '-e', default=5, type=int, help='Finish page. Default = 5')
-    parser.add_argument('-si', '--skip_imgs', action='store_const', default=True, const=False, help='Cancel loading images')
-    parser.add_argument('-st', '--skip_txt', action='store_const', default=True, const=False, help='Cancel loading books')
-    parser.add_argument('-df', '--dest_folder', default=Path.cwd(), help='Path to save books, imges and json')
-    parser.add_argument('-jp', '--json_path', help='Path to save json file')
+    parser = argparse.ArgumentParser(description='Parse books from https://tululu.org/l55/ - fantastic genre.')
+    parser.add_argument('-start_page', '-s', default=1, type=int, help='Start page. Default = 1.')
+    parser.add_argument('-end_page', '-e', default=5, type=int, help='Finish page. Default = 5.')
+    parser.add_argument('-si', '--skip_imgs',
+                        action='store_const',
+                        default=True,
+                        const=False,
+                        help='Cancel loading images.'
+                        )
+    parser.add_argument('-st', '--skip_txt',
+                        action='store_const',
+                        default=True,
+                        const=False,
+                        help='Cancel loading books.'
+                        )
+    parser.add_argument('-df', '--dest_folder', default=Path.cwd(), help='Path to save books, imges and json.')
+    parser.add_argument('-jp', '--json_path', help='Path to save json file.')
     return parser
 
 
@@ -39,7 +49,6 @@ def get_books_ids(response):
     parsed_urls = []
     for book_soup in soup_of_books:
         book_relative_url = book_soup.select_one('a')['href']
-
         book_id = re.findall(r'\d+', book_relative_url)
         parsed_urls.extend(book_id)
     return parsed_urls
