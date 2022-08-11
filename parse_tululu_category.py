@@ -54,7 +54,7 @@ def get_books_ids(response):
     return parsed_urls
 
 
-def book_loader(url, book_page_url, skip_image, skip_txt):
+def get_book_parse(url, book_page_url, skip_image, skip_txt):
     '''Download book, image and return parsed book information'''
     book_page_response = requests.get(book_page_url)
     book_page_response.raise_for_status()
@@ -120,7 +120,7 @@ if __name__ == '__main__':
         flag = True
         while flag:
             try:
-                book_info = book_loader(url, book_page_url, namespace.skip_imgs, namespace.skip_txt)
+                parsed_book = get_book_parse(url, book_page_url, namespace.skip_imgs, namespace.skip_txt)
                 break
             except requests.ConnectionError:
                 logging.info('Проблема подключения. Повторная попытка через 60 секунд.')
@@ -132,10 +132,10 @@ if __name__ == '__main__':
         else:
             continue
 
-        parsed_books[book_info['title']] = {
-            'genres': book_info['genres'],
-            'author': book_info['author'],
-            'comments': book_info['comments']
+        parsed_books[parsed_book['title']] = {
+            'genres': parsed_book['genres'],
+            'author': parsed_book['author'],
+            'comments': parsed_book['comments']
         }
 
     save_json_path = Path(json_path) / 'book_info.json'
