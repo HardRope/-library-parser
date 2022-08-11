@@ -45,12 +45,22 @@ def get_books_ids(response):
     return parsed_urls
 
 
-if __name__ == '__main__':
-    parser = create_parser()
-    namespace = parser.parse_args()
-    logging.basicConfig(level=logging.INFO)
+def book_loader(url, book_page_url, skip_image, skip_txt):
+    '''Download book, image and return parsed book information'''
+    book_page_response = requests.get(book_page_url)
+    book_page_response.raise_for_status()
+    check_for_redirect(book_page_response)
+    book_info = parse_book_page(book_page_url, book_page_response)
 
-    if namespace.dest_folder and os.path.exists(namespace.dest_folder):
+    if skip_txt:
+        download_book(url, books_path, book_id, book_info['title'])
+    if skip_image:
+        download_image(book_info['img_url'], images_path, book_id, book_info['title'])
+    return book_info
+
+
+def get_paths(namespace):
+    if os.path.exists(namespace.dest_folder):
         save_path = namespace.dest_folder
     elif not os.path.exists(namespace.dest_folder):
         print(f'Ошибка в указанном пути {namespace.dest_folder}. Попробуйте снова.' )
@@ -66,6 +76,15 @@ if __name__ == '__main__':
     else:
         print(f'Ошибка в указанном пути {namespace.json_path}. Попробуйте снова.')
         raise SystemExit
+    return books_path, images_path, json_path
+
+
+if __name__ == '__main__':
+    parser = create_parser()
+    namespace = parser.parse_args()
+    logging.basicConfig(level=logging.INFO)
+
+    books_path, images_path, json_path = get_paths(namespace)
 
     books_ids = []
     parsed_books = {}
@@ -90,17 +109,9 @@ if __name__ == '__main__':
         book_page_url = f'https://tululu.org/b{book_id}/'
 
         flag = True
-        while flag == True:
+        while flag:
             try:
-                book_page_response = requests.get(book_page_url)
-                book_page_response.raise_for_status()
-                check_for_redirect(book_page_response)
-                book_info = parse_book_page(book_page_url, book_page_response)
-
-                if namespace.skip_imgs:
-                    download_book(url, books_path, book_id, book_info['title'])
-                if namespace.skip_txt:
-                    download_image(book_info['img_url'], images_path, book_id, book_info['title'])
+                book_info = book_loader(url, book_page_url, namespace.skip_imgs, namespace.skip_txt)
                 break
             except requests.ConnectionError:
                 logging.info('Проблема подключения. Повторная попытка через 60 секунд.')
