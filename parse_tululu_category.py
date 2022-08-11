@@ -71,8 +71,8 @@ def get_book_parse(url, book_page_url, skip_image, skip_txt):
 def get_paths(namespace):
     if os.path.exists(namespace.dest_folder):
         save_path = namespace.dest_folder
-    elif not os.path.exists(namespace.dest_folder):
-        print(f'Ошибка в указанном пути {namespace.dest_folder}. Попробуйте снова.' )
+    else:
+        logging.info(f'Ошибка в указанном пути {namespace.dest_folder}. Попробуйте снова.\n' )
         raise SystemExit
 
     books_path = create_directory('books', save_path=save_path)
@@ -83,8 +83,9 @@ def get_paths(namespace):
     elif os.path.exists(namespace.json_path):
         json_path = namespace.json_path
     else:
-        print(f'Ошибка в указанном пути {namespace.json_path}. Попробуйте снова.')
+        logging.info(f'Ошибка в указанном пути {namespace.json_path}. Попробуйте снова.\n')
         raise SystemExit
+    
     return books_path, images_path, json_path
 
 
