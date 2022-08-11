@@ -13,7 +13,7 @@ import requests
 from bs4 import BeautifulSoup
 from pathvalidate import sanitize_filename as sanitize
 
-from main import (
+from parse_tululu_books import (
     check_for_redirect,
     create_directory,
     parse_book_page,

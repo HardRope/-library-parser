@@ -38,7 +38,7 @@ every 60 secs.
 
 ## Run the programm:
 
-To parse book by these id's, use `main.py` file:
+To parse book by these id's, use `parse_tululu_books.py` file:
 
    ```
    python main.py [start_id] [end_id]
