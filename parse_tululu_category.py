@@ -27,14 +27,14 @@ def create_parser():
     parser.add_argument('-end_page', '-e', default=5, type=int, help='Finish page. Default = 5.')
     parser.add_argument('-si', '--skip_imgs',
                         action='store_const',
-                        default=True,
-                        const=False,
+                        default=False,
+                        const=True,
                         help='Cancel loading images.'
                         )
     parser.add_argument('-st', '--skip_txt',
                         action='store_const',
-                        default=True,
-                        const=False,
+                        default=False,
+                        const=True,
                         help='Cancel loading books.'
                         )
     parser.add_argument('-df', '--dest_folder', default=Path.cwd(), help='Path to save books, imges and json.')
@@ -61,9 +61,9 @@ def get_book_parse(url, book_page_url, skip_image, skip_txt):
     check_for_redirect(book_page_response)
     book_info = parse_book_page(book_page_url, book_page_response)
 
-    if skip_txt:
+    if not skip_txt:
         download_book(url, books_path, book_id, book_info['title'])
-    if skip_image:
+    if not skip_image:
         download_image(book_info['img_url'], images_path, book_id, book_info['title'])
     return book_info
 
@@ -85,7 +85,7 @@ def get_paths(namespace):
     else:
         logging.info(f'Ошибка в указанном пути {namespace.json_path}. Попробуйте снова.\n')
         raise SystemExit
-    
+
     return books_path, images_path, json_path
 
 
