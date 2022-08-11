@@ -27,7 +27,7 @@ def create_parser():
     parser.add_argument('-end_page', '-e', default=5, type=int, help='Finish page. Default = 5')
     parser.add_argument('-si', '--skip_imgs', action='store_const', default=True, const=False, help='Cancel loading images')
     parser.add_argument('-st', '--skip_txt', action='store_const', default=True, const=False, help='Cancel loading books')
-    parser.add_argument('-df', '--dest_folder', help='Path to save books, imges and json')
+    parser.add_argument('-df', '--dest_folder', default=Path.cwd(), help='Path to save books, imges and json')
     parser.add_argument('-jp', '--json_path', help='Path to save json file')
     return parser
 
@@ -50,24 +50,22 @@ if __name__ == '__main__':
     namespace = parser.parse_args()
     logging.basicConfig(level=logging.INFO)
 
-    if not namespace.dest_folder:
-        save_path = Path.cwd()
-    elif namespace.dest_folder and os.path.exists(namespace.dest_folder):
+    if namespace.dest_folder and os.path.exists(namespace.dest_folder):
         save_path = namespace.dest_folder
-    else:
+    elif not os.path.exists(namespace.dest_folder):
         print(f'Ошибка в указанном пути {namespace.dest_folder}. Попробуйте снова.' )
         raise SystemExit
 
     books_path = create_directory('books', save_path=save_path)
     images_path = create_directory('images', save_path=save_path)
 
-    if namespace.json_path and os.path.exists(namespace.json_path):
+    if not namespace.json_path:
+        json_path = create_directory('book_info', save_path=save_path)
+    elif os.path.exists(namespace.json_path):
         json_path = namespace.json_path
-    elif namespace.json_path and not os.path.exists(namespace.json_path):
+    else:
         print(f'Ошибка в указанном пути {namespace.json_path}. Попробуйте снова.')
         raise SystemExit
-    else:
-        json_path = create_directory('book_info', save_path=save_path)
 
     books_ids = []
     parsed_books = {}
