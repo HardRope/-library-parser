@@ -59,13 +59,13 @@ def get_book_parse(url, book_page_url, skip_image, skip_txt):
     book_page_response = requests.get(book_page_url)
     book_page_response.raise_for_status()
     check_for_redirect(book_page_response)
-    book_info = parse_book_page(book_page_url, book_page_response)
+    parsed_book = parse_book_page(book_page_url, book_page_response)
 
     if not skip_txt:
-        download_book(url, books_path, book_id, book_info['title'])
+        download_book(url, books_path, book_id, parsed_book['title'])
     if not skip_image:
-        download_image(book_info['img_url'], images_path, book_id, book_info['title'])
-    return book_info
+        download_image(parsed_book['img_url'], images_path, book_id, parsed_book['title'])
+    return parsed_book
 
 
 def get_paths(namespace):
