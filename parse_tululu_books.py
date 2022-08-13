@@ -49,6 +49,7 @@ def download_image(image_url, dir_path, book_id, book_title):
     save_img_path = dir_path / file_name
     with open(save_img_path, 'wb') as file:
         file.write(book_image_response.content)
+    return save_img_path
 
 
 def get_book_comments(soup):
@@ -106,7 +107,7 @@ if __name__ == '__main__':
                 book_info = parse_book_page(book_page_url, book_page_response)
 
                 download_book(url, books_path, book_id, book_info['title'])
-                download_image(book_info['img_url'], images_path, book_id, book_info['title'])
+                image_path = download_image(book_info['img_url'], images_path, book_id, book_info['title'])
                 break
             except requests.ConnectionError:
                 logging.info('Проблема подключения. Повторная попытка через 60 секунд.')
@@ -121,7 +122,8 @@ if __name__ == '__main__':
         parsed_books[book_info['title']] = {
             'genres': book_info['genres'],
             'author': book_info['author'],
-            'comments': book_info['comments']
+            'comments': book_info['comments'],
+            'image_url': image_path.as_uri(),
         }
 
     with open(save_json_path, 'w') as file:
