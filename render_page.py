@@ -1,15 +1,11 @@
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
+from livereload import Server, shell
 
 import json
 
-if __name__=='__main__':
-    env = Environment(
-        loader=FileSystemLoader('.'),
-        autoescape=select_autoescape(['html', 'xml'])
-    )
-
+def on_reload():
     template = env.get_template('template.html')
 
     with open('book_info/book_info.json', 'r') as file:
@@ -22,4 +18,15 @@ if __name__=='__main__':
 
     with open('index.html', 'w', encoding="utf8") as file:
         file.write(rendered_page)
-    print('Готово')
+    print('Site rebuilt')
+
+if __name__=='__main__':
+    env = Environment(
+        loader=FileSystemLoader('.'),
+        autoescape=select_autoescape(['html', 'xml'])
+    )
+    on_reload()
+
+    server = Server()
+    server.watch('book_info/book_info.json', on_reload)
+    server.serve(root='.')
