@@ -124,8 +124,8 @@ if __name__ == '__main__':
             'genres': book_info['genres'],
             'author': book_info['author'],
             'comments': book_info['comments'],
-            'image_url': os.path.join('images', image_file_name),
-            'txt_url': os.path.join('books', book_file_name),
+            'image_url': os.path.join('../images', image_file_name),
+            'txt_url': os.path.join('../books', book_file_name),
         }
 
     with open(save_json_path, 'w') as file:
