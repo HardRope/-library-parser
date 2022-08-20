@@ -5,7 +5,7 @@ import time
 import os
 
 from pathlib import Path
-from urllib.parse import urljoin
+from urllib.parse import urljoin, quote
 
 import requests
 
@@ -39,7 +39,7 @@ def download_book(url, dir_path, book_id, book_title):
     save_book_path = dir_path / file_name
     with open(save_book_path, 'wb') as file:
         file.write(book_response.content)
-    return file_name
+    return save_book_path
 
 def download_image(image_url, dir_path, book_id, book_title):
     book_image_response = requests.get(image_url)
@@ -50,7 +50,7 @@ def download_image(image_url, dir_path, book_id, book_title):
     save_img_path = dir_path / file_name
     with open(save_img_path, 'wb') as file:
         file.write(book_image_response.content)
-    return file_name
+    return save_img_path
 
 
 def get_book_comments(soup):
@@ -105,10 +105,10 @@ if __name__ == '__main__':
                 book_page_response = requests.get(book_page_url)
                 book_page_response.raise_for_status()
                 check_for_redirect(book_page_response)
-                book_info = parse_book_page(book_page_url, book_page_response)
+                parsed_book = parse_book_page(book_page_url, book_page_response)
 
-                book_file_name = download_book(url, books_path, book_id, book_info['title'])
-                image_file_name = download_image(book_info['img_url'], images_path, book_id, book_info['title'])
+                book_file_path = download_book(url, books_path, book_id, parsed_book['title'])
+                image_file_path = download_image(parsed_book['img_url'], images_path, book_id, parsed_book['title'])
                 break
             except requests.ConnectionError:
                 logging.info('Проблема подключения. Повторная попытка через 60 секунд.')
@@ -120,12 +120,12 @@ if __name__ == '__main__':
         else:
             continue
 
-        parsed_books[book_info['title']] = {
-            'genres': book_info['genres'],
-            'author': book_info['author'],
-            'comments': book_info['comments'],
-            'image_url': os.path.join('..\\images', image_file_name),
-            'txt_url': os.path.join('..\\books', book_file_name),
+        parsed_books[parsed_book['title']] = {
+            'genres': parsed_book['genres'],
+            'author': parsed_book['author'],
+            'comments': parsed_book['comments'],
+            'image_url': image_file_path.as_uri(),
+            'txt_url': book_file_path.as_uri(),
         }
 
     with open(save_json_path, 'w') as file:
