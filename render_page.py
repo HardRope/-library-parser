@@ -18,9 +18,12 @@ def on_reload():
     books_keys_by_pages = list(chunked(books_keys, 5))
 
     for page_num, keys in enumerate(books_keys_by_pages, 1):
+
         rendered_page = template.render(
             parsed_books=parsed_books,
             books_keys=keys,
+            pages_count=len(books_keys_by_pages),
+            current_page=page_num,
         )
         with open(f'pages/index{page_num}.html', 'w', encoding="utf8") as file:
             file.write(rendered_page)
