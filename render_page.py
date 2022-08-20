@@ -38,4 +38,4 @@ if __name__=='__main__':
 
     server = Server()
     server.watch('book_info/book_info.json', on_reload)
-    server.serve(root='pages/')
+    server.serve(root='.')
