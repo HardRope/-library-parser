@@ -11,6 +11,7 @@
     <title>Big-big library</title>
   </head>
   <body>
+    <hr class="mt-0 { margin-top:0 !important; }"/>
     <div class="mx-auto" style="width: 200px;">
       <nav aria-label="Page navigation example">
         <ul class="pagination">
@@ -65,6 +66,11 @@
                     <div class="card-body">
                       <h5 class="card-title">{{ keys[0] }}</h5>
                       <p class="card-text">{{ parsed_books[keys[0]]['author']}}</p>
+                      <p>
+                        {% for genre in parsed_books[keys[0]]['genres'] %}
+                          <span class="badge badge-light">{{ genre }}</span>
+                        {% endfor %}
+                      </p>
                       <a href="{{ parsed_books[keys[0]]['txt_url']|urlencode }}" target="_blank">Читать</a>
                     </div>
                   </div>
@@ -81,6 +87,11 @@
                     <div class="card-body">
                       <h5 class="card-title">{{ keys[1] }}</h5>
                       <p class="card-text">{{ parsed_books[keys[1]]['author']}}</p>
+                      <p>
+                        {% for genre in parsed_books[keys[1]]['genres'] %}
+                          <span class="badge badge-light">{{ genre }}</span>
+                        {% endfor %}
+                      </p>
                       <a href="{{ parsed_books[keys[1]]['txt_url']|urlencode }}" target="_blank">Читать</a>
                     </div>
                   </div>
@@ -101,6 +112,11 @@
                     <div class="card-body">
                       <h5 class="card-title">{{ keys[0] }}</h5>
                       <p class="card-text">{{ parsed_books[keys[0]]['author']}}</p>
+                      <p>
+                        {% for genre in parsed_books[keys[0]]['genres'] %}
+                          <span class="badge badge-light">{{ genre }}</span>
+                        {% endfor %}
+                      </p>
                       <a href="{{ parsed_books[keys[0]]['txt_url']|urlencode }}" target="_blank">Читать</a>
                     </div>
                   </div>
