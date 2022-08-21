@@ -39,7 +39,7 @@ def download_book(url, dir_path, book_id, book_title):
     save_book_path = dir_path / file_name
     with open(save_book_path, 'wb') as file:
         file.write(book_response.content)
-    return save_book_path
+    return file_name
 
 def download_image(image_url, dir_path, book_id, book_title):
     book_image_response = requests.get(image_url)
@@ -50,7 +50,7 @@ def download_image(image_url, dir_path, book_id, book_title):
     save_img_path = dir_path / file_name
     with open(save_img_path, 'wb') as file:
         file.write(book_image_response.content)
-    return save_img_path
+    return file_name
 
 
 def get_book_comments(soup):
@@ -124,8 +124,8 @@ if __name__ == '__main__':
             'genres': parsed_book['genres'],
             'author': parsed_book['author'],
             'comments': parsed_book['comments'],
-            'image_url': image_file_path.as_uri(),
-            'txt_url': book_file_path.as_uri(),
+            'image_url': f'../images/{image_file_path}',
+            'txt_url': f'../books/{book_file_path}',
         }
 
     with open(save_json_path, 'w') as file:
