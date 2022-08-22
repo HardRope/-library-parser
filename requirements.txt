@@ -1,4 +1,7 @@
 beautifulsoup4==4.11.*
 lxml==4.9.*
-pathvalidate==2.5.0
-requests==2.27.1
+pathvalidate==2.5.*
+requests==2.27.*
+Jinja2==3.1.*
+livereload==2.6.*
+more-itertools==8.14.*
