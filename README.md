@@ -40,16 +40,27 @@ every 60 secs.
 
 To parse book by these id's, use `parse_tululu_books.py` file:
 
-   ```
-   python parse_tululu_books.py [start_id] [end_id]
+   ```commandline
+   python parse_tululu_books.py -h
+   
+  -h, --help            show this help message and exit
+  -start_id START_ID, -s START_ID
+                        Start book id. Default = 0
+  -end_id END_ID, -e END_ID
+                        Finish book id. Default = 10
+  -si, --skip_imgs      Cancel loading images.
+  -st, --skip_txt       Cancel loading books.
+  -df DEST_FOLDER, --dest_folder DEST_FOLDER
+                        Path to save books, imges and json.
+  -jp JSON_PATH, --json_path JSON_PATH
+                        Path to save json file.
    ```
 
 `Start_id` and `end_id` is a books id's from website, for example
    book at these page `https://tululu.org/b1` have id == 1. 
 
 Otherwise, you can use genre parser `parse_tululu_category.py`. 
-It download fantastic books from [fantastic books](https://tululu.org/l55/) by pages
-and have more settings args:
+It download fantastic books from [fantastic books](https://tululu.org/l55/) by pages:
 
 ```commandline
   python parse_tululu_category.py -h
@@ -66,6 +77,27 @@ and have more settings args:
   -jp JSON_PATH, --json_path JSON_PATH
                         Path to save json file
 ```
+
+## Site creating
+
+You can create your own site with parsed books!
+
+For this you must put parsed books (`txt`, `images` and `json` files) to `media` folder 
+(directories `books`, `images` and `book_info`) and run the renderer
+
+```commandline
+python render_page.py
+```
+
+It create folder `pages` with created `html`-files and run local server. First page of created site will be:
+
+```
+127.0.0.1:5500/pages/index1.html
+```
+
+To stop local server just type `Ctrl-C` in your console.
+
+Example of created site here -> [Big-big library](https://hardrope.github.io/-library-parser/pages/index1.html)
 
 ## Project Goals
 
