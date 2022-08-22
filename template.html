@@ -84,7 +84,7 @@
               <div class="card mb-3" style="max-width: 540px;">
                 <div class="row no-gutters">
                   <div class="col-md-4">
-                  <img src="{{ ('../media/images/' ~ parsed_books[second_title].book_id ~ '. ' ~ first_title ~'.jpg')|urlencode }}"
+                  <img src="{{ ('../media/images/' ~ parsed_books[second_title].book_id ~ '. ' ~ second_title ~'.jpg')|urlencode }}"
                        class="card-img" alt="{{ second_title }}">
                   </div>
                   <div class="col-md-8">
@@ -96,7 +96,7 @@
                           <span class="badge badge-light">{{ genre }}</span>
                         {% endfor %}
                       </p>
-                      <a href="{{ ('../media/books/' ~ parsed_books[second_title].book_id ~ '. ' ~ first_title ~'.txt')|urlencode }}"
+                      <a href="{{ ('../media/books/' ~ parsed_books[second_title].book_id ~ '. ' ~ second_title ~'.txt')|urlencode }}"
                          target="_blank">Читать</a>
                     </div>
                   </div>
