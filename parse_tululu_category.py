@@ -62,11 +62,9 @@ def get_book_parse(url, book_page_url, skip_image, skip_txt):
     parsed_book = parse_book_page(book_page_url, book_page_response)
 
     if not skip_txt:
-        book_file_name = download_book(url, books_path, book_id, parsed_book['title'])
-        parsed_book['book_uri'] = book_file_name.as_uri()
+        download_book(url, books_path, book_id, parsed_book['title'])
     if not skip_image:
-        image_file_name = download_image(parsed_book['img_url'], images_path, book_id, parsed_book['title'])
-        parsed_book['image_uri'] = image_file_name.as_uri()
+        download_image(parsed_book['img_url'], images_path, book_id, parsed_book['title'])
     return parsed_book
 
 
@@ -124,6 +122,7 @@ if __name__ == '__main__':
         while flag:
             try:
                 parsed_book = get_book_parse(url, book_page_url, namespace.skip_imgs, namespace.skip_txt)
+                parsed_book['book_id'] = book_id
                 break
             except requests.ConnectionError:
                 logging.info('Проблема подключения. Повторная попытка через 60 секунд.')
@@ -136,11 +135,10 @@ if __name__ == '__main__':
             continue
 
         parsed_books[parsed_book['title']] = {
+            'book_id': parsed_book['book_id'],
             'genres': parsed_book['genres'],
             'author': parsed_book['author'],
             'comments': parsed_book['comments'],
-            'image_url': parsed_book['image_uri'],
-            'txt_url': parsed_book['book_uri'],
         }
 
     save_json_path = Path(json_path) / 'book_info.json'

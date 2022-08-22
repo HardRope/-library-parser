@@ -39,7 +39,7 @@ def download_book(url, dir_path, book_id, book_title):
     save_book_path = dir_path / file_name
     with open(save_book_path, 'wb') as file:
         file.write(book_response.content)
-    return file_name
+
 
 def download_image(image_url, dir_path, book_id, book_title):
     book_image_response = requests.get(image_url)
@@ -50,7 +50,6 @@ def download_image(image_url, dir_path, book_id, book_title):
     save_img_path = dir_path / file_name
     with open(save_img_path, 'wb') as file:
         file.write(book_image_response.content)
-    return file_name
 
 
 def get_book_comments(soup):
@@ -105,10 +104,11 @@ if __name__ == '__main__':
                 book_page_response = requests.get(book_page_url)
                 book_page_response.raise_for_status()
                 check_for_redirect(book_page_response)
-                parsed_book = parse_book_page(book_page_url, book_page_response)
 
-                book_file_path = download_book(url, books_path, book_id, parsed_book['title'])
-                image_file_path = download_image(parsed_book['img_url'], images_path, book_id, parsed_book['title'])
+                parsed_book = parse_book_page(book_page_url, book_page_response)
+                download_book(url, books_path, book_id, parsed_book['title'])
+                download_image(parsed_book['img_url'], images_path, book_id, parsed_book['title'])
+                parsed_book['book_id'] = book_id
                 break
             except requests.ConnectionError:
                 logging.info('Проблема подключения. Повторная попытка через 60 секунд.')
@@ -121,11 +121,10 @@ if __name__ == '__main__':
             continue
 
         parsed_books[parsed_book['title']] = {
+            'book_id': parsed_book['book_id'],
             'genres': parsed_book['genres'],
             'author': parsed_book['author'],
             'comments': parsed_book['comments'],
-            'image_url': f'../images/{image_file_path}',
-            'txt_url': f'../books/{book_file_path}',
         }
 
     with open(save_json_path, 'w') as file:
