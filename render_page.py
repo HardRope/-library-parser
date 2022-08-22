@@ -1,4 +1,3 @@
-from http.server import HTTPServer, SimpleHTTPRequestHandler
 import os
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
