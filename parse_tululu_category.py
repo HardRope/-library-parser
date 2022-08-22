@@ -18,7 +18,8 @@ from parse_tululu_books import (
     create_directory,
     parse_book_page,
     download_book,
-    download_image
+    download_image,
+    get_paths
 )
 
 def create_parser():
@@ -66,27 +67,6 @@ def get_book_parse(url, book_page_url, skip_image, skip_txt):
     if not skip_image:
         download_image(parsed_book['img_url'], images_path, book_id, parsed_book['title'])
     return parsed_book
-
-
-def get_paths(namespace):
-    if os.path.exists(namespace.dest_folder):
-        save_path = namespace.dest_folder
-    else:
-        logging.info(f'Ошибка в указанном пути {namespace.dest_folder}. Попробуйте снова.\n' )
-        raise SystemExit
-
-    books_path = create_directory('books', save_path=save_path)
-    images_path = create_directory('images', save_path=save_path)
-
-    if not namespace.json_path:
-        json_path = create_directory('book_info', save_path=save_path)
-    elif os.path.exists(namespace.json_path):
-        json_path = namespace.json_path
-    else:
-        logging.info(f'Ошибка в указанном пути {namespace.json_path}. Попробуйте снова.\n')
-        raise SystemExit
-
-    return books_path, images_path, json_path
 
 
 if __name__ == '__main__':
