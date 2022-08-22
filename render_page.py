@@ -10,7 +10,7 @@ def on_reload():
     os.makedirs('pages', exist_ok=True)
     template = env.get_template('template.html')
 
-    with open('book_info/book_info.json', 'r') as file:
+    with open('media/book_info/book_info.json', 'r') as file:
         parsed_books_json = file.read()
     parsed_books = json.loads(parsed_books_json)
 
@@ -37,5 +37,6 @@ if __name__=='__main__':
     on_reload()
 
     server = Server()
-    server.watch('book_info/book_info.json', on_reload)
+    server.watch('media/', on_reload)
+    server.watch('template.html', on_reload)
     server.serve()
