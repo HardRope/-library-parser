@@ -70,7 +70,7 @@ def download_book(url, dir_path, book_id, book_title):
     book_response.raise_for_status()
     check_for_redirect(book_response)
 
-    file_name = f'''{book_id}. {book_title}'.txt'''
+    file_name = f'''{book_id}. {book_title}.txt'''
     save_book_path = dir_path / file_name
     with open(save_book_path, 'wb') as file:
         file.write(book_response.content)
