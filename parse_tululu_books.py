@@ -5,7 +5,7 @@ import time
 import os
 
 from pathlib import Path
-from urllib.parse import urljoin, quote
+from urllib.parse import urljoin
 
 import requests
 

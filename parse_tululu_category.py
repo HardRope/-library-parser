@@ -1,21 +1,17 @@
 import argparse
 import json
 import logging
-import os
 import re
 import time
 
 from pathlib import Path
-from urllib.parse import urljoin
 
 import requests
 
 from bs4 import BeautifulSoup
-from pathvalidate import sanitize_filename as sanitize
 
 from parse_tululu_books import (
     check_for_redirect,
-    create_directory,
     parse_book_page,
     download_book,
     download_image,
