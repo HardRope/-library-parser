@@ -52,80 +52,59 @@
       </nav>
     </div>
     <div class="container">
-      {% for keys in books_keys %}
-
-        {% if keys|length == 2 %}
-          <div class="row">
-            <div class="col">
-              <div class="card mb-3" style="max-width: 540px;">
-                <div class="row no-gutters">
-                  <div class="col-md-4">
-                    <img src="{{ parsed_books[keys[0]]['image_url'] }}" class="card-img" alt="{{keys[0]}}">
-                  </div>
-                  <div class="col-md-8">
-                    <div class="card-body">
-                      <h5 class="card-title">{{ keys[0] }}</h5>
-                      <p class="card-text">{{ parsed_books[keys[0]]['author']}}</p>
-                      <p>
-                        {% for genre in parsed_books[keys[0]]['genres'] %}
-                          <span class="badge badge-light">{{ genre }}</span>
-                        {% endfor %}
-                      </p>
-                      <a href="{{ parsed_books[keys[0]]['txt_url']}}" target="_blank">Читать</a>
-                    </div>
-                  </div>
+      {% for title_pair in title_pairs %}
+        <div class="row">
+          {% set first_title = title_pair[0] %}
+          <div class="col">
+            <div class="card mb-3" style="max-width: 540px;">
+              <div class="row no-gutters">
+                <div class="col-md-4">
+                  <img src="{{ ('../media/images/' ~ parsed_books[first_title].book_id ~ '. ' ~ first_title ~'.jpg')|urlencode }}"
+                       class="card-img" alt="{{ first_title }}">
                 </div>
-              </div>
-            </div>
-            <div class="col">
-              <div class="card mb-3" style="max-width: 540px;">
-                <div class="row no-gutters">
-                  <div class="col-md-4">
-                    <img src="{{ parsed_books[keys[1]]['image_url'] }}" class="card-img" alt="{{keys[1]}}">
-                  </div>
-                  <div class="col-md-8">
-                    <div class="card-body">
-                      <h5 class="card-title">{{ keys[1] }}</h5>
-                      <p class="card-text">{{ parsed_books[keys[1]]['author']}}</p>
-                      <p>
-                        {% for genre in parsed_books[keys[1]]['genres'] %}
-                          <span class="badge badge-light">{{ genre }}</span>
-                        {% endfor %}
-                      </p>
-                      <a href="{{ parsed_books[keys[1]]['txt_url'] }}" target="_blank">Читать</a>
-                    </div>
+                <div class="col-md-8">
+                  <div class="card-body">
+                    <h5 class="card-title">{{ first_title }}</h5>
+                    <p class="card-text">{{ parsed_books[first_title].author}}</p>
+                    <p>
+                      {% for genre in parsed_books[first_title].genres %}
+                        <span class="badge badge-light">{{ genre }}</span>
+                      {% endfor %}
+                    </p>
+                    <a href="{{ ('../media/books/' ~ parsed_books[first_title].book_id ~ '. ' ~ first_title ~'.txt')|urlencode }}"
+                       target="_blank">Читать</a>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
-        {% else %}
-          <div class="row">
+          {% if title_pair|length == 2 %}
+            {% set second_title = title_pair[1] %}
             <div class="col">
               <div class="card mb-3" style="max-width: 540px;">
                 <div class="row no-gutters">
                   <div class="col-md-4">
-                    <img src="{{ parsed_books[keys[0]]['image_url'] }}" class="card-img" alt="{{keys[0]}}">
+                  <img src="{{ ('../media/images/' ~ parsed_books[second_title].book_id ~ '. ' ~ first_title ~'.jpg')|urlencode }}"
+                       class="card-img" alt="{{ second_title }}">
                   </div>
                   <div class="col-md-8">
                     <div class="card-body">
-                      <h5 class="card-title">{{ keys[0] }}</h5>
-                      <p class="card-text">{{ parsed_books[keys[0]]['author']}}</p>
+                      <h5 class="card-title">{{ second_title }}</h5>
+                      <p class="card-text">{{ parsed_books[second_title].author}}</p>
                       <p>
-                        {% for genre in parsed_books[keys[0]]['genres'] %}
+                        {% for genre in parsed_books[second_title].genres %}
                           <span class="badge badge-light">{{ genre }}</span>
                         {% endfor %}
                       </p>
-                      <a href="{{ parsed_books[keys[0]]['txt_url'] }}" target="_blank">Читать</a>
+                      <a href="{{ ('../media/books/' ~ parsed_books[second_title].book_id ~ '. ' ~ first_title ~'.txt')|urlencode }}"
+                         target="_blank">Читать</a>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        {% endif %}
-
+          {% endif %}
+        </div>
       {% endfor %}
     </div>
     <!-- Optional JavaScript -->
