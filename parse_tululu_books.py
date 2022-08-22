@@ -23,10 +23,45 @@ def create_directory(save_dir, save_path=Path.cwd()):
     return dir_path
 
 
+def get_paths(namespace):
+    if os.path.exists(namespace.dest_folder):
+        save_path = namespace.dest_folder
+    else:
+        logging.info(f'Ошибка в указанном пути {namespace.dest_folder}. Попробуйте снова.\n' )
+        raise SystemExit
+
+    books_path = create_directory('books', save_path=save_path)
+    images_path = create_directory('images', save_path=save_path)
+
+    if not namespace.json_path:
+        json_path = create_directory('book_info', save_path=save_path)
+    elif os.path.exists(namespace.json_path):
+        json_path = namespace.json_path
+    else:
+        logging.info(f'Ошибка в указанном пути {namespace.json_path}. Попробуйте снова.\n')
+        raise SystemExit
+
+    return books_path, images_path, json_path
+
+
 def create_parser():
     parser = argparse.ArgumentParser(description='Parse books from tululu.org')
     parser.add_argument('-start_id', '-s', default=0, type=int, help='Start book id. Default = 0')
     parser.add_argument('-end_id', '-e', default=10, type=int, help='Finish book id. Default = 10')
+    parser.add_argument('-si', '--skip_imgs',
+                        action='store_const',
+                        default=False,
+                        const=True,
+                        help='Cancel loading images.'
+                        )
+    parser.add_argument('-st', '--skip_txt',
+                        action='store_const',
+                        default=False,
+                        const=True,
+                        help='Cancel loading books.'
+                        )
+    parser.add_argument('-df', '--dest_folder', default=Path.cwd(), help='Path to save books, imges and json.')
+    parser.add_argument('-jp', '--json_path', help='Path to save json file.')
     return parser
 
 
@@ -87,9 +122,7 @@ if __name__ == '__main__':
     parser = create_parser()
     namespace = parser.parse_args()
 
-    books_path = create_directory('books')
-    images_path = create_directory('images')
-    json_path = create_directory('book_info')
+    books_path, images_path, json_path = get_paths(namespace)
 
     parsed_books = {}
     save_json_path = json_path / 'book_info.json'
@@ -106,9 +139,12 @@ if __name__ == '__main__':
                 check_for_redirect(book_page_response)
 
                 parsed_book = parse_book_page(book_page_url, book_page_response)
-                download_book(url, books_path, book_id, parsed_book['title'])
-                download_image(parsed_book['img_url'], images_path, book_id, parsed_book['title'])
                 parsed_book['book_id'] = book_id
+
+                if not namespace.skip_txt:
+                    download_book(url, books_path, book_id, parsed_book['title'])
+                if not namespace.skip_imgs:
+                    download_image(parsed_book['img_url'], images_path, book_id, parsed_book['title'])
                 break
             except requests.ConnectionError:
                 logging.info('Проблема подключения. Повторная попытка через 60 секунд.')
