@@ -14,15 +14,14 @@ def on_reload():
         parsed_books_json = file.read()
     parsed_books = json.loads(parsed_books_json)
 
-    books_keys = list(chunked(parsed_books.keys(), 2))
-    books_keys_by_pages = list(chunked(books_keys, 5))
+    books_titles = list(chunked(parsed_books.keys(), 2))
+    books_titles_by_pages = list(chunked(books_titles, 5))
 
-    for page_num, keys in enumerate(books_keys_by_pages, 1):
-
+    for page_num, title_pairs in enumerate(books_titles_by_pages, 1):
         rendered_page = template.render(
             parsed_books=parsed_books,
-            books_keys=keys,
-            pages_count=len(books_keys_by_pages),
+            title_pairs=title_pairs,
+            pages_count=len(books_titles_by_pages),
             current_page=page_num,
         )
         with open(f'pages/index{page_num}.html', 'w', encoding="utf8") as file:
