@@ -12,8 +12,10 @@ def on_reload():
     with open('media/book_info/book_info.json', 'r') as file:
         parsed_books = json.load(file)
 
-    books_titles = list(chunked(parsed_books.keys(), 2))
-    books_titles_by_pages = list(chunked(books_titles, 5))
+    page_col_count = 2
+    page_row_count = 5
+    books_titles = list(chunked(parsed_books.keys(), page_col_count))
+    books_titles_by_pages = list(chunked(books_titles, page_row_count))
 
     for page_num, title_pairs in enumerate(books_titles_by_pages, 1):
         rendered_page = template.render(
