@@ -1,13 +1,14 @@
 # -library-parser
  
-Programm writed to download books and parse information about it from
+Program wrote to download books and parse information about it from
 [tululu.org](https://tululu.org/). 
-After running programm, it create 3 directories: `book_info`, `books` and `images`.
+After running program, it will create 3 directories: `book_info`, `books` and `images`.
 
 1. `book_info` - contain json-file with information about book you downloaded. 
    
    ```
        "title": {
+        "book_id": int
         "genres": [
             list_of_book_genres
         ],
@@ -22,7 +23,7 @@ After running programm, it create 3 directories: `book_info`, `books` and `image
 
 3. `images` - books covers in `jpg` format.
 
-For better working, programm check book's availability, and miss unused id's.
+For better working, program check book's availability, and miss unused id's.
 
 In case of connection problem, it's stop parsing and tries to reconnect for current book page 
 every 60 secs.
@@ -60,7 +61,7 @@ To parse book by these id's, use `parse_tululu_books.py` file:
    book at these page `https://tululu.org/b1` have id == 1. 
 
 Otherwise, you can use genre parser `parse_tululu_category.py`. 
-It download fantastic books from [fantastic books](https://tululu.org/l55/) by pages:
+It downloads fantastic books from [fantastic books](https://tululu.org/l55/) by pages:
 
 ```commandline
   python parse_tululu_category.py -h
@@ -82,14 +83,14 @@ It download fantastic books from [fantastic books](https://tululu.org/l55/) by p
 
 You can create your own site with parsed books!
 
-For this you must put parsed books (`txt`, `images` and `json` files) to `media` folder 
+For this you must put parsed books (`txt`, `images` and `json` files) to `-library-parser/media/` folder 
 (directories `books`, `images` and `book_info`) and run the renderer
 
 ```commandline
 python render_page.py
 ```
 
-It create folder `pages` with created `html`-files and run local server. First page of created site will be:
+It creates folder `pages` with created `html`-files and run local server. First page of created site will be:
 
 ```
 127.0.0.1:5500/pages/index1.html
@@ -98,6 +99,8 @@ It create folder `pages` with created `html`-files and run local server. First p
 To stop local server just type `Ctrl-C` in your console.
 
 Example of created site here -> [Big-big library](https://hardrope.github.io/-library-parser/pages/index1.html)
+
+![img.png](/static/site_example.png)
 
 ## Project Goals
 
