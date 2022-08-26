@@ -10,8 +10,7 @@ def on_reload():
     template = env.get_template('template.html')
 
     with open('media/book_info/book_info.json', 'r') as file:
-        parsed_books_json = file.read()
-    parsed_books = json.loads(parsed_books_json)
+        parsed_books = json.load(file)
 
     books_titles = list(chunked(parsed_books.keys(), 2))
     books_titles_by_pages = list(chunked(books_titles, 5))
